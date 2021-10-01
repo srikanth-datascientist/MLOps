@@ -100,7 +100,6 @@ def preprocess(
     text: str,
     lower: bool = True,
     stem: bool = False,
-    filters: str = r"[!\"'#$%&()*\+,-./:;<=>?@\\\[\]^_`{|}~]",
     stopwords: List = [
         "i",
         "me",
@@ -314,8 +313,9 @@ def preprocess(
         text = pattern.sub("", text)
 
     # Spacing and filters
-    text = re.sub(r"([-;;.,!?<=>])", r" \1 ", text)
-    text = re.sub(filters, r"", text)
+    text = re.sub(
+        r"([!\"'#$%&()*\+,-./:;<=>?@\\\[\]^_`{|}~])", r" \1 ", text
+    )  # add spacing between objects to be filtered
     text = re.sub("[^A-Za-z0-9]+", " ", text)  # remove non alphanumeric chars
     text = re.sub(" +", " ", text)  # remove multiple spaces
     text = text.strip()

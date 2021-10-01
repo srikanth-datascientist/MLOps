@@ -74,24 +74,22 @@ def test_clean(tags, df):
 
 
 @pytest.mark.parametrize(
-    "text, lower, stem, filters, stopwords, preprocessed_text",
+    "text, lower, stem, stopwords, preprocessed_text",
     [
-        ("Hello worlds", False, False, "", [], "Hello worlds"),
-        ("Hello worlds", True, False, "", [], "hello worlds"),
-        ("Hello worlds", False, True, "", [], "Hello world"),
-        ("Hello worlds", True, True, "", [], "hello world"),
-        ("Hello worlds", True, True, "l", [], "heo word"),
-        ("Hello worlds", True, True, "", ["world"], "hello world"),
-        ("Hello worlds", True, True, "", ["worlds"], "hello"),
+        ("Hello worlds", False, False, [], "Hello worlds"),
+        ("Hello worlds", True, False, [], "hello worlds"),
+        ("Hello worlds", False, True, [], "Hello world"),
+        ("Hello worlds", True, True, [], "hello world"),
+        ("Hello worlds", True, True, ["world"], "hello world"),  # intended behavior
+        ("Hello worlds", True, True, ["worlds"], "hello"),
     ],
 )
-def test_preprocess(text, lower, stem, filters, stopwords, preprocessed_text):
+def test_preprocess(text, lower, stem, stopwords, preprocessed_text):
     assert (
         data.preprocess(
             text=text,
             lower=lower,
             stem=stem,
-            filters=filters,
             stopwords=stopwords,
         )
         == preprocessed_text

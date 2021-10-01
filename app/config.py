@@ -93,5 +93,4 @@ EXCLUDED_TAGS = [
     "python",
     "r",
     "visualization",
-    "wandb",
 ]

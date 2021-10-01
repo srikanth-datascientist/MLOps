@@ -68,26 +68,6 @@ def compute_features(
 
 
 @app.command()
-def get_historical_features():
-    """Retrieve historical features for training."""
-    # Entities to pull data for (should dynamically read this from somewhere)
-    project_ids = [1, 2, 3]
-    now = datetime.now()
-    timestamps = [datetime(now.year, now.month, now.day)] * len(project_ids)
-    entity_df = pd.DataFrame.from_dict({"id": project_ids, "event_timestamp": timestamps})
-
-    # Get historical features
-    store = FeatureStore(repo_path=Path(config.BASE_DIR, "features"))
-    training_df = store.get_historical_features(
-        entity_df=entity_df,
-        feature_refs=["project_details:text", "project_details:tags"],
-    ).to_df()
-
-    # Store in location for training task to pick up
-    print(training_df.head())
-
-
-@app.command()
 def optimize(
     params_fp: Path = Path(config.CONFIG_DIR, "params.json"),
     study_name: Optional[str] = "optimization",
@@ -191,7 +171,7 @@ def train_model(
 @app.command()
 def predict_tags(
     text: Optional[str] = "Transfer learning with BERT for self-supervised learning",
-    run_id: str = open(Path(config.MODEL_DIR, "run_id.txt")).read(),
+    run_id: Optional[str] = open(Path(config.MODEL_DIR, "run_id.txt")).read(),
 ) -> Dict:
     """Predict tags for a give input text using a trained model.
 
@@ -201,7 +181,7 @@ def predict_tags(
     Args:
         text (str, optional): Input text to predict tags for.
                               Defaults to "Transfer learning with BERT for self-supervised learning".
-        run_id (str): ID of the model run to load artifacts. Defaults to run ID in config.MODEL_DIR.
+        run_id (str, optional): ID of the model run to load artifacts. Defaults to run ID in config.MODEL_DIR.
 
     Raises:
         ValueError: Run id doesn't exist in experiment.
@@ -307,3 +287,23 @@ def behavioral_reevaluation(
 
     # Log updated performance
     utils.save_dict(artifacts["performance"], Path(model_dir, "performance.json"))
+
+
+@app.command()
+def get_historical_features():
+    """Retrieve historical features for training."""
+    # Entities to pull data for (should dynamically read this from somewhere)
+    project_ids = [1, 2, 3]
+    now = datetime.now()
+    timestamps = [datetime(now.year, now.month, now.day)] * len(project_ids)
+    entity_df = pd.DataFrame.from_dict({"id": project_ids, "event_timestamp": timestamps})
+
+    # Get historical features
+    store = FeatureStore(repo_path=Path(config.BASE_DIR, "features"))
+    training_df = store.get_historical_features(
+        entity_df=entity_df,
+        feature_refs=["project_details:text", "project_details:tags"],
+    ).to_df()
+
+    # Store in location for training task to pick up
+    print(training_df.head())

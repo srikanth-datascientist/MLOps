@@ -4,11 +4,12 @@ SHELL := /bin/bash
 .PHONY: help
 help:
 	@echo "Commands:"
-	@echo "venv   : creates development environment."
-	@echo "style  : runs style formatting."
-	@echo "clean  : cleans all unecessary files."
-	@echo "dvc    : pushes versioned artifacts to blob storage."
-	@echo "test   : run non-training tests."
+	@echo "tagifai : list of CLI operations."
+	@echo "venv    : creates development environment."
+	@echo "style   : runs style formatting."
+	@echo "clean   : cleans all unecessary files."
+	@echo "dvc     : pushes versioned artifacts to blob storage."
+	@echo "test    : run non-training tests."
 
 # Environment
 .ONESHELL:
