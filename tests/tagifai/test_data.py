@@ -10,8 +10,8 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from app import config
-from tagifai import data, main, utils
+from config import config
+from tagifai import data, utils
 
 
 @pytest.fixture(scope="module")
@@ -28,7 +28,7 @@ def df():
     # Load features
     params_fp = Path(config.CONFIG_DIR, "params.json")
     params = Namespace(**utils.load_dict(filepath=params_fp))
-    df, _ = main.compute_features(params=params)
+    df, _ = data.compute_features(params=params)
     return df
 
 

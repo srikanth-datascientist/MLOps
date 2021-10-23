@@ -31,4 +31,4 @@ logger = logging.getLogger("root")
 logger.handlers[0] = RichHandler(markup=True)
 ```
 
-::: app.config
+::: config.config

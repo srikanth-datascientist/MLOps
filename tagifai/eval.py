@@ -28,7 +28,7 @@ def short_text(x):
 def get_metrics(
     y_true: np.ndarray, y_pred: np.ndarray, classes: List, df: pd.DataFrame = None
 ) -> Dict:
-    """Per-class performance metrics.
+    """Calculate metrics for fine-grained performance evaluation.
 
     Args:
         y_true (np.ndarray): True class labels.
@@ -37,7 +37,7 @@ def get_metrics(
         df (pd.DataFrame, optional): dataframe used for slicing.
 
     Returns:
-        Dictionary of overall and per-class performance metrics.
+        Dictionary of fine-grained performance metrics.
     """
     # Performance
     metrics = {"overall": {}, "class": {}}

@@ -7,7 +7,6 @@ import random
 from typing import Dict, List
 from urllib.request import urlopen
 
-import mlflow
 import numpy as np
 import pandas as pd
 import torch
@@ -129,14 +128,3 @@ def dict_diff(d_a: Dict, d_b: Dict, d_a_name="a", d_b_name="b") -> Dict:
             diff[key] = {d_a_name: d_a[key], d_b_name: d_b[key], "diff": d_a[key] - d_b[key]}
 
     return diff
-
-
-def delete_experiment(experiment_name: str):
-    """Delete an experiment with name `experiment_name`.
-
-    Args:
-        experiment_name (str): Name of the experiment.
-    """
-    client = mlflow.tracking.MlflowClient()
-    experiment_id = client.get_experiment_by_name(experiment_name).experiment_id
-    client.delete_experiment(experiment_id=experiment_id)

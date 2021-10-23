@@ -4,7 +4,9 @@
 import itertools
 import json
 import re
+from argparse import Namespace
 from collections import Counter
+from pathlib import Path
 from typing import List, Sequence, Tuple
 
 import numpy as np
@@ -12,6 +14,9 @@ import pandas as pd
 import torch
 from nltk.stem import PorterStemmer
 from skmultilearn.model_selection import IterativeStratification
+
+from config import config
+from tagifai import utils
 
 
 def filter_items(items: List, include: List = [], exclude: List = []) -> List:
@@ -100,187 +105,7 @@ def preprocess(
     text: str,
     lower: bool = True,
     stem: bool = False,
-    stopwords: List = [
-        "i",
-        "me",
-        "my",
-        "myself",
-        "we",
-        "our",
-        "ours",
-        "ourselves",
-        "you",
-        "you're",
-        "you've",
-        "you'll",
-        "you'd",
-        "your",
-        "yours",
-        "yourself",
-        "yourselves",
-        "he",
-        "him",
-        "his",
-        "himself",
-        "she",
-        "she's",
-        "her",
-        "hers",
-        "herself",
-        "it",
-        "it's",
-        "its",
-        "itself",
-        "they",
-        "them",
-        "their",
-        "theirs",
-        "themselves",
-        "what",
-        "which",
-        "who",
-        "whom",
-        "this",
-        "that",
-        "that'll",
-        "these",
-        "those",
-        "am",
-        "is",
-        "are",
-        "was",
-        "were",
-        "be",
-        "been",
-        "being",
-        "have",
-        "has",
-        "had",
-        "having",
-        "do",
-        "does",
-        "did",
-        "doing",
-        "a",
-        "an",
-        "the",
-        "and",
-        "but",
-        "if",
-        "or",
-        "because",
-        "as",
-        "until",
-        "while",
-        "of",
-        "at",
-        "by",
-        "for",
-        "with",
-        "about",
-        "against",
-        "between",
-        "into",
-        "through",
-        "during",
-        "before",
-        "after",
-        "above",
-        "below",
-        "to",
-        "from",
-        "up",
-        "down",
-        "in",
-        "out",
-        "on",
-        "off",
-        "over",
-        "under",
-        "again",
-        "further",
-        "then",
-        "once",
-        "here",
-        "there",
-        "when",
-        "where",
-        "why",
-        "how",
-        "all",
-        "any",
-        "both",
-        "each",
-        "few",
-        "more",
-        "most",
-        "other",
-        "some",
-        "such",
-        "no",
-        "nor",
-        "not",
-        "only",
-        "own",
-        "same",
-        "so",
-        "than",
-        "too",
-        "very",
-        "s",
-        "t",
-        "can",
-        "will",
-        "just",
-        "don",
-        "don't",
-        "should",
-        "should've",
-        "now",
-        "d",
-        "ll",
-        "m",
-        "o",
-        "re",
-        "ve",
-        "y",
-        "ain",
-        "aren",
-        "aren't",
-        "couldn",
-        "couldn't",
-        "didn",
-        "didn't",
-        "doesn",
-        "doesn't",
-        "hadn",
-        "hadn't",
-        "hasn",
-        "hasn't",
-        "haven",
-        "haven't",
-        "isn",
-        "isn't",
-        "ma",
-        "mightn",
-        "mightn't",
-        "mustn",
-        "mustn't",
-        "needn",
-        "needn't",
-        "shan",
-        "shan't",
-        "shouldn",
-        "shouldn't",
-        "wasn",
-        "wasn't",
-        "weren",
-        "weren't",
-        "won",
-        "won't",
-        "wouldn",
-        "wouldn't",
-    ],
+    stopwords: List = config.STOPWORDS,
 ) -> str:
     """Conditional preprocessing on text.
 
@@ -733,3 +558,32 @@ class CNNTextDataset(torch.utils.data.Dataset):
             drop_last=drop_last,
             pin_memory=True,
         )
+
+
+def compute_features(params: Namespace) -> None:
+    """Compute features to use for training.
+
+    Args:
+        params (Namespace): Input parameters for operations.
+    """
+    # Set up
+    utils.set_seed(seed=params.seed)
+
+    # Load data
+    projects_url = (
+        "https://raw.githubusercontent.com/GokuMohandas/MadeWithML/main/datasets/projects.json"
+    )
+    projects = utils.load_json_from_url(url=projects_url)
+    df = pd.DataFrame(projects)
+
+    # Compute features
+    df["text"] = df.title + " " + df.description
+    df.drop(columns=["title", "description"], inplace=True)
+    df = df[["id", "created_on", "text", "tags"]]
+
+    # Save
+    features = df.to_dict(orient="records")
+    df_dict_fp = Path(config.DATA_DIR, "features.json")
+    utils.save_dict(d=features, filepath=df_dict_fp)
+
+    return df, features

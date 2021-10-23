@@ -4,12 +4,16 @@ SHELL := /bin/bash
 .PHONY: help
 help:
 	@echo "Commands:"
-	@echo "tagifai : list of CLI operations."
+	@echo "tagifai : list of main operations."
 	@echo "venv    : creates development environment."
 	@echo "style   : runs style formatting."
-	@echo "clean   : cleans all unecessary files."
+	@echo "clean   : cleans all unnecessary files."
 	@echo "dvc     : pushes versioned artifacts to blob storage."
 	@echo "test    : run non-training tests."
+
+.PHONY: install
+install:
+	python -m pip install -e . --no-cache-dir
 
 # Environment
 .ONESHELL:

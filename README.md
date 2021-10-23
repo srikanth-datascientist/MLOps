@@ -30,23 +30,23 @@ Learn how to apply ML to build a production grade product to deliver value.
 
 <table>
     <tr>
-        <td align="center"><b>📦&nbsp; Product</b></td>
+        <td align="center"><b>📦&nbsp; Purpose</b></td>
         <td align="center"><b>📝&nbsp; Scripting</b></td>
         <td align="center"><b>♻️&nbsp; Reproducibility</b></td>
     </tr>
     <tr>
-        <td><a href="https://madewithml.com/courses/mlops/objective/">Objective</a></td>
-        <td><a href="https://madewithml.com/courses/mlops/organization/">Organization</a></td>
+        <td><a href="https://madewithml.com/courses/mlops/product/">Product</a></td>
+        <td><a href="https://madewithml.com/courses/mlops/packaging/">Packaging</a></td>
         <td><a href="https://madewithml.com/courses/mlops/git/">Git</a></td>
     </tr>
     <tr>
-        <td><a href="https://madewithml.com/courses/mlops/solution/">Solution</a></td>
-        <td><a href="https://madewithml.com/courses/mlops/packaging/">Packaging</a></td>
+        <td><a href="https://madewithml.com/courses/mlops/#methodology">Methodology</a></td>
+        <td><a href="https://madewithml.com/courses/mlops/organization/">Organization</a></td>
         <td><a href="https://madewithml.com/courses/mlops/pre-commit/">Pre-commit</a></td>
     </tr>
     <tr>
-        <td><a href="https://madewithml.com/courses/mlops/iteration/">Iteration</a></td>
-        <td><a href="https://madewithml.com/courses/mlops/documentation/">Documentation</a></td>
+        <td><a href="https://madewithml.com/courses/mlops/#project-management">Project</a></td>
+        <td><a href="https://madewithml.com/courses/mlops/logging/">Logging</a></td>
         <td><a href="https://madewithml.com/courses/mlops/versioning/">Versioning</a></td>
     </tr>
     <tr>
@@ -61,7 +61,7 @@ Learn how to apply ML to build a production grade product to deliver value.
     </tr>
     <tr>
         <td><a href="https://madewithml.com/courses/mlops/preprocessing/">Preprocessing</a></td>
-        <td><a href="https://madewithml.com/courses/mlops/logging/">Logging</a></td>
+        <td><a href="https://madewithml.com/courses/mlops/documentation/">Documentation</a></td>
         <td><a href="https://madewithml.com/courses/mlops/dashboard/">Dashboard</a></td>
     </tr>
     <tr>
@@ -109,18 +109,21 @@ Learn how to apply ML to build a production grade product to deliver value.
 ## Directory structure
 ```bash
 app/
-├── api.py        - FastAPI app
-└── cli.py        - CLI app
-├── config.py     - configuration setup
-├── schemas.py    - API model schemas
+├── api.py           - FastAPI app
+├── gunicorn.py      - WSGI script
+└── schemas.py       - API model schemas
+config/
+├── config.py        - configuration setup
+├── params.json      - training parameters
+└──  test_params.py  - training test parameters
 tagifai/
-├── data.py       - data processing components
-├── eval.py       - evaluation components
-├── main.py       - training/optimization pipelines
-├── models.py     - model architectures
-├── predict.py    - inference components
-├── train.py      - training components
-└── utils.py      - supplementary utilities
+├── data.py          - data processing components
+├── eval.py          - evaluation components
+├── main.py          - training/optimization pipelines
+├── models.py        - model architectures
+├── predict.py       - inference components
+├── train.py         - training components
+└── utils.py         - supplementary utilities
 ```
 > Documentation for this application can be found [here](https://gokumohandas.github.io/mlops/).
 
@@ -135,7 +138,7 @@ source venv/bin/activate
 2. Get data
 ```bash
 # Download to data/
-tagifai download-data
+tagifai download-auxiliary-data
 
 # or Pull from DVC
 dvc init
@@ -229,7 +232,7 @@ docker run -p 5000:5000 --name tagifai tagifai:latest
 ### Application
 ```bash
 uvicorn app.api:app --host 0.0.0.0 --port 5000 --reload --reload-dir tagifai --reload-dir app  # dev
-gunicorn -c config/gunicorn.py -k uvicorn.workers.UvicornWorker app.api:app  # prod
+gunicorn -c app/gunicorn.py -k uvicorn.workers.UvicornWorker app.api:app  # prod
 ```
 
 ### Streamlit

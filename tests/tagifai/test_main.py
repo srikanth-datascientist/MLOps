@@ -7,17 +7,17 @@ from pathlib import Path
 import pytest
 from typer.testing import CliRunner
 
-from app import config
-from app.cli import app
-from tagifai import utils
+from config import config
+from tagifai import main
+from tagifai.main import app
 
 runner = CliRunner()
 
 
 def test_download_data():
-    result = runner.invoke(app, ["download-data"])
+    result = runner.invoke(app, ["download-auxiliary-data"])
     assert result.exit_code == 0
-    assert "Data downloaded!" in result.stdout
+    assert "downloaded" in result.stdout
 
 
 def test_compute_features():
@@ -49,7 +49,7 @@ def test_optimize():
     assert "Trial 0" in result.stdout
 
     # Delete study
-    utils.delete_experiment(experiment_name=study_name)
+    main.delete_experiment(experiment_name=study_name)
     shutil.rmtree(Path(config.MODEL_REGISTRY, ".trash"))
 
 
@@ -78,7 +78,7 @@ def test_train_model():
     assert "f1" in result.stdout
 
     # Delete experiment
-    utils.delete_experiment(experiment_name=experiment_name)
+    main.delete_experiment(experiment_name=experiment_name)
     shutil.rmtree(Path(config.MODEL_REGISTRY, ".trash"))
     shutil.rmtree(tmp_dir)
 

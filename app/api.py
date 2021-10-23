@@ -10,9 +10,9 @@ from typing import Dict, Optional
 
 from fastapi import FastAPI, Request
 
-from app import config
-from app.config import logger
 from app.schemas import PredictPayload
+from config import config
+from config.config import logger
 from tagifai import main, predict
 
 # Define application
@@ -26,7 +26,7 @@ app = FastAPI(
 @app.on_event("startup")
 def load_artifacts():
     global artifacts
-    run_id = open(Path(config.MODEL_DIR, "run_id.txt")).read()
+    run_id = open(Path(config.CONFIG_DIR, "run_id.txt")).read()
     artifacts = main.load_artifacts(run_id=run_id)
     logger.info("Ready for inference!")
 

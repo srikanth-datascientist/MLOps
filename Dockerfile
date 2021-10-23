@@ -28,4 +28,4 @@ RUN dvc pull
 EXPOSE 5000
 
 # Start app
-ENTRYPOINT ["gunicorn", "-c", "config/gunicorn.py", "-k", "uvicorn.workers.UvicornWorker", "app.api:app"]
+ENTRYPOINT ["gunicorn", "-c", "app/gunicorn.py", "-k", "uvicorn.workers.UvicornWorker", "app.api:app"]
