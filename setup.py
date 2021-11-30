@@ -38,7 +38,7 @@ setup(
     license="MIT",
     description="Tag suggestions for projects on Made With ML.",
     author="Goku Mohandas",
-    author_email="hello@madewithml.com",
+    author_email="goku@madewithml.com",
     url="https://madewithml.com/",
     keywords=[
         "machine-learning",
